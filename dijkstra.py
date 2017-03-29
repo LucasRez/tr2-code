@@ -1,25 +1,59 @@
 from grafo import *
 
 
-def dijInit(grafo, comeco):
-    visitados = [comeco]
-    naoVisitados = []
-    for j in grafo.vertDict:
-        if j not in visitados:
-            naoVisitados.append(j)
+def dijkstra(grafo, comeco, fim):
+    tabela = []
+    i = 0
+    anterior = comeco
+    # inicializa distancias
+    linha = {}
+    for w in grafo:
+        if w is grafo.getVertice(comeco):
+            linha[w.getId()] = 0
+        else:
+            linha[w.getId()] = sys.maxint
+    newlinha = linha
+    tabela.append(linha.copy())
+    i = i + 1
+    marcados = [min(linha, key=linha.get)]
+    naoMarcados = []
+    a = min(linha, key=linha.get)
+    anterior = a
+    for w in grafo:
+        if w not in marcados:
+            naoMarcados.append(w.getId())
 
-    print("visitados:",visitados)
-    print("Nao visitados:",naoVisitados)
+    # laco principal
+    # preenche tabela de distancias
+    while naoMarcados:
+        aux = {}
+        for w in naoMarcados:
+            if grafo.getVertice(w) in grafo.getVertice(anterior).getConexoes():
+                novaDist = linha[anterior] + grafo.getVertice(anterior).getPeso(grafo.getVertice(w))
+                linha[w] = min(novaDist, tabela[i-1][w])
+                aux[w] = linha[w]
+        a = min(aux, key=aux.get)
+        anterior = a
+        marcados.append(a)
+        naoMarcados.remove(a)
+        tabela.append(linha.copy())
+        i = i + 1
 
-    while naoVisitados:
-        g.getVertice(comeco).getDistancia(g.getVertice(naoVisitados[0]))
-        visitados.append(naoVisitados[0])
-        naoVisitados.remove(naoVisitados[0])
-        print("visitados:",visitados)
-        print("Nao visitados:",naoVisitados)
+    # backtracking para fazer o caminho mais curto
+    i = marcados.index(fim)
+    j = i
+    caminho = [fim]
 
-    for w in g.getVertice(comeco).distancias:
-        print (w.id, g.getVertice(comeco).distancias[w])
+    while i > 0:
+        i = i - 1
+
+        if tabela[i][marcados[j]] != tabela[i+1][marcados[j]]:
+            j = i
+            caminho = [marcados[j]] + caminho
+    return caminho
+
+
+
 
 
 
@@ -44,4 +78,4 @@ if __name__ == '__main__':
     g.addAresta('d', 'e', 6)
     g.addAresta('e', 'f', 9)
 
-    dijInit(g, g.getVertice('a').getId())
+    dijkstra(g, 'a', 'f')

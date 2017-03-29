@@ -4,17 +4,14 @@ class Vertice:
     def __init__(self, nodo):
         self.id = nodo
         self.adjacentes = {}
-        self.distancias = {}
 
     def __str__(self):
         return str(self.id) + ' adjacentes: ' + str([x.id for x in self.adjacentes])
 
     def addVizinho(self, vizinho, peso = 1):
         self.adjacentes[vizinho] = peso
-        self.setDistancia(vizinho, peso)
 
     def removeVizinho(self, vizinho):
-        self.setDistancia(vizinho, sys.maxint)
         del self.adjacentes[vizinho]
 
     def getConexoes(self):
@@ -23,17 +20,8 @@ class Vertice:
     def getId(self):
         return self.id
 
-    def setDistancia(self, nodo, val):
-        self.distancias[nodo] = val
-
-    def getDistancia(self, nodo):
-        if nodo is self:
-            self.setDistancia(nodo, 0)
-        elif nodo not in self.distancias:
-            self.setDistancia(nodo, sys.maxint)
-        else:
-            pass
-        return self.distancias[nodo]
+    def getPeso(self, vizinho):
+        return self.adjacentes[vizinho]
 
 
 class Grafo:
@@ -99,7 +87,7 @@ if __name__ == '__main__':
         for w in v.getConexoes():
             vid = v.getId()
             wid = w.getId()
-            print '(%s, %s, %3d)' %(vid, wid, v.getDistancia(w))
+            print '(%s, %s, %3d)' %(vid, wid, v.getPeso(w))
 
     for v in g:
         print 'g.vertDict[%s] = %s' %(v.getId(), g.vertDict[v.getId()])
