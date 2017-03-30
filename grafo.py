@@ -57,6 +57,12 @@ class Grafo:
             self.vertDict[de].removeVizinho(self.vertDict[para])
             self.vertDict[para].removeVizinho(self.vertDict[de])
 
+    def getAresta(self, de, para):
+        if de in self.vertDict and para in self.vertDict:
+            return (de, para, self.getVertice(de).getPeso(self.vertDict[para]))
+        else:
+            return None
+
     def getVertices(self):
         return self.vertDict.keys()
 

@@ -32,6 +32,8 @@ def dijkstra(grafo, comeco, fim):
                 novaDist = linha[anterior] + grafo.getVertice(anterior).getPeso(grafo.getVertice(w))
                 linha[w] = min(novaDist, tabela[i-1][w])
                 aux[w] = linha[w]
+        if aux == {}:
+            return []
         a = min(aux, key=aux.get)
         anterior = a
         marcados.append(a)
@@ -52,9 +54,27 @@ def dijkstra(grafo, comeco, fim):
             caminho = [marcados[j]] + caminho
     return caminho
 
-
-
-
+def kpaths(grafo, comeco, fim, k):
+    g = grafo
+    caminhos = []
+    while k > 0:
+        arestas = []
+        caminho = dijkstra(g, comeco, fim)
+        for i in range(0, len(caminho) - 1):
+            arestas.append(g.getAresta(caminho[i], caminho[i+1]))
+        if arestas:
+            minAresta = min(arestas, key = lambda t: t[2])
+            g.removeAresta(minAresta[0], minAresta[1])
+            caminhos.append(caminho)
+        else:
+            minAresta = []
+        print "arestas:", arestas
+        print "menor aresta:", minAresta
+        print "caminho:", caminho
+        k = k - 1
+        if caminho == []:
+            break
+    return caminhos
 
 
 if __name__ == '__main__':
@@ -78,4 +98,4 @@ if __name__ == '__main__':
     g.addAresta('d', 'e', 6)
     g.addAresta('e', 'f', 9)
 
-    dijkstra(g, 'a', 'f')
+    kpaths(g, 'a', 'f', 1)
