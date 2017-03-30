@@ -5,6 +5,7 @@ def dijkstra(grafo, comeco, fim):
     tabela = []
     i = 0
     anterior = comeco
+
     # inicializa distancias
     linha = {}
     for w in grafo:
@@ -32,9 +33,10 @@ def dijkstra(grafo, comeco, fim):
                 novaDist = linha[anterior] + grafo.getVertice(anterior).getPeso(grafo.getVertice(w))
                 linha[w] = min(novaDist, tabela[i-1][w])
                 aux[w] = linha[w]
-        if aux == {}:
-            return []
-        a = min(aux, key=aux.get)
+        if aux != {}:
+            a = min(aux, key=aux.get)
+        else:
+            a = naoMarcados[0]
         anterior = a
         marcados.append(a)
         naoMarcados.remove(a)
@@ -52,6 +54,8 @@ def dijkstra(grafo, comeco, fim):
         if tabela[i][marcados[j]] != tabela[i+1][marcados[j]]:
             j = i
             caminho = [marcados[j]] + caminho
+    if caminho[0] is not comeco and caminho[-1] is not fim:
+        return []
     return caminho
 
 def kpaths(grafo, comeco, fim, k):
@@ -68,9 +72,6 @@ def kpaths(grafo, comeco, fim, k):
             caminhos.append(caminho)
         else:
             minAresta = []
-        print "arestas:", arestas
-        print "menor aresta:", minAresta
-        print "caminho:", caminho
         k = k - 1
         if caminho == []:
             break
