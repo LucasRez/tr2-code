@@ -74,7 +74,6 @@ def kpaths(grafo, comeco, fim, k):
             #     else:
             #         print minAresta, "pq foi essa msm"
             #         g.removeAresta(minAresta[0], minAresta[1])
-            print "antes", arestas
             for aresta in arestas:
                 if len(arestas) == 1:
                     break
@@ -89,9 +88,6 @@ def kpaths(grafo, comeco, fim, k):
             for aresta in naoRemover:
                 if len(arestas) > 1:
                     arestas.remove(aresta)
-            print "depois" ,arestas
-            print "aresta removida:", arestas[0]
-            print  "---------------------"
             grafo.removeAresta(arestas[0][0], arestas[0][1])
 
 
