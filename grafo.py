@@ -1,5 +1,3 @@
-import sys
-
 class Vertice:
     def __init__(self, nodo):
         self.id = nodo
