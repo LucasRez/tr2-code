@@ -46,6 +46,7 @@ B = raw_input("Insira o no de destino:")
 k = int(raw_input("Insira o numero de menores caminhos (1 para dijkstra): "))
 
 if k == 1 or k == None:
+    print A, B
     path = dijkstra.dijkstra(g, A, B)
     print "menor caminho:", path
 

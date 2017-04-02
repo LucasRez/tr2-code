@@ -2,69 +2,13 @@ import sys
 from grafo import Grafo
 from heap import Heap
 
-# def dijkstra(grafo, comeco, fim):
-#     tabela = []
-#     i = 0
-#     anterior = comeco
-#
-#     # inicializa distancias
-#     linha = {}
-#     for w in grafo:
-#         if w is grafo.getVertice(comeco):
-#             linha[w.getId()] = 0
-#         else:
-#             linha[w.getId()] = sys.maxint
-#     tabela.append(linha.copy())
-#     i = i + 1
-#     marcados = [min(linha, key=linha.get)]
-#     naoMarcados = []
-#     a = min(linha, key=linha.get)
-#     anterior = a
-#     for w in grafo:
-#         if w not in marcados:
-#             naoMarcados.append(w.getId())
-#
-#     # laco principal
-#     # preenche tabela de distancias
-#     while naoMarcados:
-#         aux = {}
-#         for w in naoMarcados:
-#             if grafo.getVertice(w) in grafo.getVertice(anterior).getConexoes():
-#                 novaDist = linha[anterior] + grafo.getVertice(anterior).getPeso(grafo.getVertice(w))
-#                 linha[w] = min(novaDist, tabela[i-1][w])
-#                 aux[w] = linha[w]
-#         if aux != {}:
-#             a = min(aux, key=aux.get)
-#         else:
-#             a = naoMarcados[0]
-#         anterior = a
-#         marcados.append(a)
-#         naoMarcados.remove(a)
-#         tabela.append(linha.copy())
-#         i = i + 1
-#
-#     # backtracking para fazer o caminho mais curto
-#     i = marcados.index(fim)
-#     j = i
-#     caminho = [fim]
-#
-#     while i > 0:
-#         i = i - 1
-#
-#         if tabela[i][marcados[j]] != tabela[i+1][marcados[j]]:
-#             j = i
-#             caminho = [marcados[j]] + caminho
-#     if caminho[0] is not comeco and caminho[-1] is not fim:
-#         return []
-#     return caminho
-
 def dijkstra(grafo, comeco, fim):
     h = Heap()
     lista = []
 
     #inicializa valores de distancia e cria a fila de prioridade
     for v in grafo.vertDict.keys():
-        if v is comeco:
+        if v == comeco:
             lista.append((v, 0))
         else:
             lista.append((v, sys.maxint))
@@ -105,15 +49,54 @@ def kpaths(grafo, comeco, fim, k):
     caminhos = []
     while k > 0:
         arestas = []
+        naoRemover = []
+        minAresta = None
         caminho = dijkstra(g, comeco, fim)
         for i in range(0, len(caminho) - 1):
             arestas.append(g.getAresta(caminho[i], caminho[i+1]))
         if arestas:
-            minAresta = min(arestas, key = lambda t: t[2])
-            g.removeAresta(minAresta[0], minAresta[1])
             caminhos.append(caminho)
+            #seleciona candidatas de arestas a serem removidas
+            # while minAresta is None:
+            #     minAresta = min(arestas, key = lambda t: t[2])
+            #     if len(arestas) == 1:
+            #         print minAresta, "pq sobrou"
+            #         g.removeAresta(minAresta[0], minAresta[1])
+            #     elif minAresta[1] is fim and len(grafo.getVertice(minAresta[1]).getConexoes()) <= 1:
+            #         arestas.remove(minAresta)
+            #         minAresta = None
+            #     elif len(grafo.getVertice(minAresta[1]).getConexoes()) <= 2:
+            #         arestas.remove(minAresta)
+            #         minAresta = None
+            #     elif minAresta[0] is comeco and len(grafo.getVertice(minAresta[1]).getConexoes()) <= 1:
+            #         arestas.remove(minAresta)
+            #         minAresta = None
+            #     else:
+            #         print minAresta, "pq foi essa msm"
+            #         g.removeAresta(minAresta[0], minAresta[1])
+            print "antes", arestas
+            for aresta in arestas:
+                if len(arestas) == 1:
+                    break
+                elif (aresta[0] != comeco and len(g.getVertice(aresta[0]).getConexoes()) <= 2) or (aresta[1] != fim and len(g.getVertice(aresta[1]).getConexoes()) <= 2):
+                    naoRemover.append(aresta)
+                elif aresta[0] == comeco and len(g.getVertice(comeco).getConexoes()) <= 1:
+                    naoRemover.append(aresta)
+                elif aresta[1] == fim and len(g.getVertice(fim).getConexoes()) <= 1:
+                    naoRemover.append(aresta)
+                else:
+                    pass
+            for aresta in naoRemover:
+                if len(arestas) > 1:
+                    arestas.remove(aresta)
+            print "depois" ,arestas
+            print "aresta removida:", arestas[0]
+            print  "---------------------"
+            grafo.removeAresta(arestas[0][0], arestas[0][1])
+
+
         else:
-            minAresta = []
+            minAresta = None
         k = k - 1
         if caminho == []:
             break
@@ -131,14 +114,15 @@ if __name__ == '__main__':
     g.addVertice('e')
     g.addVertice('f')
 
-    g.addAresta('a', 'b', 7)
-    g.addAresta('a', 'c', 9)
-    g.addAresta('a', 'f', 14)
-    g.addAresta('b', 'c', 10)
-    g.addAresta('b', 'd', 15)
-    g.addAresta('c', 'd', 11)
-    g.addAresta('c', 'f', 2)
-    g.addAresta('d', 'e', 6)
-    g.addAresta('e', 'f', 9)
+    g.addAresta('a', 'b', 1)
+    g.addAresta('a', 'c', 1)
+    g.addAresta('a', 'f', 1)
+    g.addAresta('b', 'c', 1)
+    g.addAresta('b', 'd', 1)
+    g.addAresta('c', 'd', 1)
+    g.addAresta('c', 'f', 1)
+    g.addAresta('d', 'e', 1)
+    g.addAresta('e', 'f', 1)
 
-    print dijkstra(g, 'a', 'f')
+    for path in kpaths(g, 'a', 'f', 7):
+        print path
